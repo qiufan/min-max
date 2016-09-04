@@ -40,7 +40,7 @@ class MinMaxLossLayer(caffe.Layer):
 		x2=bottom[0].data[j]
 		x1_x2=x1-x2
 		dis=np.dot(x1_x2,x1_x2)
-		dis_matrix(i,j)=dis
+		dis_matrix[i,j]=dis
 	for i in range(size):
 	    k1_nearest={}
 	    k2_nearest={}
@@ -55,27 +55,41 @@ class MinMaxLossLayer(caffe.Layer):
 	    print k1_nearest
 	    k2_nearest = sorted(k2_nearest.items(), key = lambda d: d[1], reverse = True)
 	    for s in range(self.k1):
-		Tk1(i,k1_nearest[s][0])=1
+		Tk1[i,k1_nearest[s][0]]=1
 	    for s in range(self.k2):
-		Tk2(i,k2_nearest[s][0])=1
+		Tk2[i,k2_nearest[s][0]]=1
 	Loss=0
 	Loss1=0
 	Loss2=0
+	self.GI=np.zeros((size,size))
+	self.GP=np.zeros((size,size))
 	for i in range(size):
 	    for j in range(size):
 		if i==j:
 		    continue
-		if Tk1(i,j)==1 or Tk1(j,i)==1:
-		    Loss1+=dis_matrix(i,j)
-		if Tk2(i,j)==1 or Tk2(j,i)==1:
-		    Loss2+=dis_matrix(i,j)
+		if Tk1[i,j]==1 or Tk1[j,i]==1:
+		    Loss1+=dis_matrix[i,j]
+		    self.GI[i,j]=1
+		if Tk2[i,j]==1 or Tk2[j,i]==1:
+		    Loss2+=dis_matrix[i,j]
+		    self.GP[i,j]=1
 	Loss=Loss1-Loss2
 	Loss=Loss/bottom[0].num
 	top[0].data[...] = Loss
 	
         
     def backward(self, top, propagate_down, bottom):
-        
+        if propagate_down[0]:
+	    size=bottom[0].num
+	    G=self.GI-self.GP
+	    D=np.diag(np.sum(G,1))
+	    Y=D-G
+	    H=np.zeros((shape(bottom[0].data)[1],size))
+	    for i in range(size):
+	        H[:,i]=bottom[0].data[i]
+	    for i in range(size):
+	        bottom[0].diff[i]=4*H*Y[:,i]
+	
     def reshape(self, bottom, top):
         """Reshaping happens during the call to forward."""
         pass

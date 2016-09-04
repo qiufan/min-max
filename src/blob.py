@@ -26,16 +26,10 @@ def im_list_to_blob(ims):
     return blob
 
 def prep_im_for_blob(im):
-    target_size = 128
-    pixel_means = np.load('0607_mean.npy')
-    channel_swap = (2,0,1)
-    image_mean=np.zeros((pixel_means.shape[1],pixel_means.shape[2],3))
-    for i in range(3):
-	image_mean[:,:,i]=pixel_means[i,:,:]
+    target_size = 96
     im = im.astype(np.float32, copy=False)
-    image_mean = cv2.resize(image_mean, (target_size,target_size),
+    im= cv2.resize(im, (target_size,target_size),
                     interpolation=cv2.INTER_LINEAR)
-    im -= image_mean
     
 
     return im
