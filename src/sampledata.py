@@ -20,7 +20,7 @@ class sampledata():
         self._sample_negative = {}
         self._sample = []
         self._sample_label = {}
-        lines = open('../data/casia_90w.txt','r')
+        lines = open('../data/normailzation.txt','r')
 	
         for line in lines:
             personname = line.split('/')[0]

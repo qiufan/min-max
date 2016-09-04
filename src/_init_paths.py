@@ -16,7 +16,7 @@ def add_path(path):
 this_dir = osp.dirname(__file__)
 
 # Add caffe to PYTHONPATH
-caffe_path = osp.join('/home/myron/Downloads/caffe-master_2/', 'python')
+caffe_path = osp.join('/home/myron/Downloads/caffe-master_insanity/', 'python')
 add_path(caffe_path)
 
 # Add lib to PYTHONPATH

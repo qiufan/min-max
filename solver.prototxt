@@ -1,0 +1,14 @@
+net: "../CASIA_train_test.prototxt"
+test_iter: 100
+test_interval: 500
+base_lr: 0.001
+momentum: 0.9
+weight_decay: 1
+lr_policy: "fixed"
+#gamma: 0.1
+#stepsize: 200000
+display: 100
+max_iter: 400000
+snapshot: 10000
+snapshot_prefix: "../models/min_max"
+solver_mode: GPU
