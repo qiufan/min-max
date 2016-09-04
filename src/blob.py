@@ -16,7 +16,7 @@ def im_list_to_blob(ims):
     """
     max_shape = np.array([im.shape for im in ims]).max(axis=0)
     num_images = len(ims)
-    blob = np.zeros((num_images, max_shape[0], max_shape[1], 3),
+    blob = np.zeros((num_images, max_shape[0], max_shape[1], 1),
                     dtype=np.float32)
     for i in xrange(num_images):
         im = ims[i]
@@ -26,10 +26,11 @@ def im_list_to_blob(ims):
     return blob
 
 def prep_im_for_blob(im):
-    target_size = 96
+    target_size = 100
     im = im.astype(np.float32, copy=False)
     im= cv2.resize(im, (target_size,target_size),
                     interpolation=cv2.INTER_LINEAR)
+    im=cv2.cvtColor(im, cv2.COLOR_RGB2GRAY) 
     
 
     return im
